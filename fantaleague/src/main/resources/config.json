@@ -1,0 +1,11 @@
+{
+  "driver": "org.postgresql.Driver",
+  "jdbc": "postgresql",
+  "host": "host",
+  "port": "port",
+  "database": "database",
+  "username": "username",
+  "password": "password",
+  "facadeEmail": "email",
+  "facadePassword": "email"
+}

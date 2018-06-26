@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>fantaleague</display-name>
+  <filter>
+    <filter-name>SessionFilter</filter-name>
+    <filter-class>controller.SessionFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <welcome-file-list>
+    <welcome-file>home</welcome-file>
+  </welcome-file-list>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/not_found.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/internal_error.html</location>
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/unavailable_service.html</location>
+  </error-page>
+</web-app>

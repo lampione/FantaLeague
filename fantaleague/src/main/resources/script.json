@@ -1,0 +1,77 @@
+{
+"nextId": "select nextval('fantaschema.sequence_id') AS id;",
+"updateUserPass": "update users set password=crypt(?, gen_salt('md5')) where email=?;",
+"validateUser": "select users.*, (password= crypt(?, password)) AS pswmatch from users where email=?;",
+"findByEmail": "select * from fantaschema.users where email=?;",
+"findByUuid": "select us.* from fantaschema.users as us, fantaschema.uuid as ui where us.email=ui.email and ui.id=?;",
+"deleteUuid": "delete from fantaschema.uuid where email=?;",
+
+"insertUser": "insert into users values (?,?,?,crypt(?, gen_salt('md5')),?);",
+"insertLeague": "insert into league values (?,?,?,?,?,?,?,?,?,?,?);",
+"insertSignedUp": "insert into user_team_league values(?,?,?,?,?,?);",
+
+"findLeagues": "select l.*, t.name as team_name, t.id as team_id from league as l, user_team_league as utl, team as t where utl.league_id = l.id and utl.team_id=t.id and utl.user_id=? and utl.status=?;",
+"findUserInvites": "select l.name, l.id, utl.team_id from league as l, user_team_league as utl where utl.league_id=l.id and utl.status='I' and utl.user_id=?;",
+
+"findLeagueUsers" : "select u.* from users as u, user_team_league as utl where utl.user_id=u.email and utl.league_id=? and utl.status<>'I';",
+"findLeagueById": "select * from league where id=?;",
+"findUserTeamName": "select utl.user_id, t.name, t.id from user_team_league as utl, team as t where utl.team_id = t.id and utl.league_id=? and utl.status<>'I';",
+"findPlayersInTeam": "select p.id, p.role, p.name, p.equipe, tp.credits as initial_quote from players as p, team_players as tp where p.id = tp.player_id and tp.team_id=?;",
+
+"createTeam": "insert into team values (?,?);",
+"saveTeam": "insert into team_players values(?,?,?,?);",
+
+"replacePlayer": "update team_players set player_id=?, credits=? where team_id=? and player_id=?;",
+
+"insertUpdateUuid": "insert into uuid values(?,?) on conflict (email) do update set id=?;",
+"insertRecoveryPass": "insert into recovery_password values(?,?,?) on conflict(user_email) do update set id=? , send_date=?;",
+"existRecoveryPass": "select id from recovery_password where id=?;",
+"findUserEmailByRequestId": "select u.email from users as u, recovery_password as r where r.user_email = u.email and r.id=?;",
+"deleteFromRequest": "delete from recovery_password where id=?;",
+"alreadyUserSignedUp" : "select id from user_team_league where user_id=? and league_id=?;",
+"findPlayersByRole": "select * from players where role=?;",
+"updateSignedUp": "update user_team_league set status=?, creation_date=? where league_id=? and user_id=?;",
+"updateTeamName": "update team set name=? from (select t.id from team as t, user_team_league as utl where utl.team_id = t.id and utl.user_id=? and utl.league_id=?) as sub where sub.id = team.id;",
+
+"deleteSignedUp": "delete from team where id=?;",
+"deleteTeam": "delete from team where id = (select t.id from team as t, user_team_league as utl where utl.team_id = t.id and utl.user_id=? and utl.league_id=?);",
+"deleteTeamMatch": "delete from match where day_id=? and team_id=?;",
+
+"userNotExist" : "select first_name from users where email=?;",
+"createUsersNotExist" : "insert into users values(?);",
+"createRegistrationCheck" : "insert into registration_check values(?,?,?) on conflict (user_email) do update set id=?, creation_date=?;",
+"rCodeMatch" : "select user_email from registration_check where id=?;",
+"updateUserInvite": "update users set first_name=?, last_name=?, password=crypt(?, gen_salt('md5')) ,born=? where email=?;",
+"deleteRegistrationCode" : "delete from registration_check where user_email=?;",
+"getTeam": "select t.* from team as t, user_team_league as utl where utl.team_id = t.id and utl.league_id=? and utl.user_id=?;",
+
+"findCurrentDay" : "select * from day where id = (select max(id) from day);",
+"saveTeamMatch" : "insert into match values(?,?,?,?,?)",
+"passCodeMatch" : "select id from recovery_password where id=?;",
+
+"findPlayersInMatch" : "select p.*, m.status from players as p, match as m where p.id = m.player_id and m.team_id=? and m.day_id=?; ",
+"findPlayersByRoleNoDuplicate" : "select p.* from players as p where p.role=? and p.id not in ( select tp.player_id from team_players as tp, user_team_league as utl where tp.team_id=utl.team_id and utl.team_id<>? and utl.league_id=?);",
+"isStatusUserSession" : "select id from user_team_league where user_id=? and status=? and league_id=?;",
+"leagueTable" : "select sum(v.final_vote), t.* from vote as v, match as m, team as t, user_team_league as utl where utl.team_id = t.id and utl.league_id=? and m.player_id = v.player_id and t.id = m.team_id and m.day_id=v.day_id and m.status = 'S' group by t.id;",
+
+"findSerieAMatch" : "select * from serie_a_match where day_id=?;",
+"findTeamPlayerVote" : "select p.*, v.* from vote as v, players as p, match as m where m.player_id=v.player_id and p.id=m.player_id and m.status='S' and m.day_id=? and v.day_id=? and m.team_id=?;",
+"findPlayerById" : "select v.*, p.* from vote as v, players as p where v.player_id=? and p.id=v.player_id;",
+
+"totalScore" :"select sum(v.final_vote) as total_score from vote as v, match as m, team as t, user_team_league as utl where utl.team_id = t.id and utl.league_id=? and m.player_id = v.player_id and t.id = m.team_id and m.status = 'S' and m.day_id=v.day_id and t.id=?;",
+"lastScore" : "select sum(v.final_vote) as last_score from vote as v, match as m, team as t, user_team_league as utl where utl.team_id = t.id and utl.league_id=? and m.player_id = v.player_id and t.id = m.team_id and m.status = 'S' and m.day_id=v.day_id and t.id=? and m.day_id=?;",
+
+"updateUserFirstName" : "update users set first_name=? where email=?;",
+"updateUserLastName" : "update users set last_name=? where email=?;",
+"updateUserBorn" : "update users set born=? where email=?;",
+
+"updateTName" : "update team set name=? where id=?;",
+"updateLName" : "update league set name=? where id=?;",
+"findTeams" : "select team_id from user_team_league where league_id=?;",
+"deleteLeague" : "delete from league where id=?;",
+"findPlayerByQuery" : "select * from players where name ilike ?;",
+"playerExsist" : "select id from players where id=?;",
+"dayVoteExist" : "select id from vote where day_id=?;",
+
+"isUserInLeague" : "select id from user_team_league where user_id=? and status<>'I' and league_id=?;"
+}
