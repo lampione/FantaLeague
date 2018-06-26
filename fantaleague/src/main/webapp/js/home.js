@@ -170,7 +170,7 @@ function showMap(position) {
 	var origin = position.coords.latitude + "," + position.coords.longitude;
 	var destination = mLocation.replace(/ /g, "+");
 
-	var url = "https://www.google.com/maps/embed/v1/directions?key=AIzaSyASH8I2jEaWuIF5H8y80pEVN-E0gpe9o54&origin=" + origin + "&destination=" + destination;
+	var url = "https://www.google.com/maps/embed/v1/directions?key=[API_KEY]&origin=" + origin + "&destination=" + destination;
 	
 	$('#map-' + mMapId).prop('src', url);
 	
